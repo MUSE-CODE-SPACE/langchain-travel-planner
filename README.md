@@ -4,7 +4,7 @@ LangChain-powered intelligent travel planning assistant that helps you plan your
 
 ## Live Demo
 
-[**View Demo**](https://yoon-gu.github.io/langchain-travel-planner/)
+[**View Demo**](https://yoon-k.github.io/langchain-travel-planner/)
 
 ## Features
 
@@ -85,7 +85,7 @@ itinerary = generator.generate_itinerary(
 
 ```bash
 # Clone repository
-git clone https://github.com/yoon-gu/langchain-travel-planner.git
+git clone https://github.com/yoon-k/langchain-travel-planner.git
 cd langchain-travel-planner
 
 # Create virtual environment
