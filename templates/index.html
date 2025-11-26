@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Planner - LangChain Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>AI Travel Planner</h1>
+                <p class="subtitle">Powered by LangChain & GPT-4</p>
+            </div>
+            <a href="https://github.com/yoon-gu" class="github-link" target="_blank">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitHub
+            </a>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="destinations-panel">
+                    <h3>Popular Destinations</h3>
+                    <div id="destinations-list" class="destinations-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="context-panel">
+                    <h3>Your Trip</h3>
+                    <div id="trip-context" class="context-content">
+                        <p class="empty-state">Start chatting to plan your trip!</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <button onclick="sendQuickMessage('Recommend a destination for a cultural trip')" class="action-btn">
+                        Find Destinations
+                    </button>
+                    <button onclick="sendQuickMessage('Search for hotels')" class="action-btn">
+                        Find Hotels
+                    </button>
+                    <button onclick="sendQuickMessage('What activities are available?')" class="action-btn">
+                        Browse Activities
+                    </button>
+                    <button onclick="sendQuickMessage('Calculate my budget')" class="action-btn">
+                        Calculate Budget
+                    </button>
+                    <button onclick="sendQuickMessage('Create my itinerary')" class="action-btn primary">
+                        Generate Itinerary
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div id="chat-messages" class="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <p>Hello! I'm your AI Travel Planner. I can help you:</p>
+                            <ul>
+                                <li>Find perfect destinations based on your interests</li>
+                                <li>Book accommodations that fit your budget</li>
+                                <li>Discover activities and must-see attractions</li>
+                                <li>Create detailed day-by-day itineraries</li>
+                                <li>Calculate budgets and find money-saving tips</li>
+                            </ul>
+                            <p>Where would you like to travel? Or would you like me to recommend some destinations?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="chat-input"
+                            placeholder="Tell me about your dream trip..."
+                            onkeypress="handleKeyPress(event)"
+                        />
+                        <button onclick="sendMessage()" id="send-btn" class="send-btn">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="input-hints">
+                        <span>Try: "I want to visit Tokyo for 5 days on a moderate budget"</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Demo application showcasing LangChain capabilities for travel planning</p>
+            <p>Built with LangChain, Flask, and modern web technologies</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Planning your perfect trip...</p>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

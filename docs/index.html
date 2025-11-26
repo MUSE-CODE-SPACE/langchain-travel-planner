@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Planner - LangChain Demo</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .demo-section {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .panel h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dest-item {
+            padding: 0.75rem;
+            background: var(--background);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dest-item:hover {
+            background: white;
+            border-color: var(--primary);
+        }
+
+        .dest-item .name { font-weight: 600; }
+        .dest-item .info { font-size: 0.75rem; color: var(--text-light); }
+        .dest-item .cost { font-size: 0.75rem; color: var(--success); }
+
+        .action-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-area {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message-content {
+            padding: 1rem;
+            border-radius: 12px;
+            line-height: 1.6;
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message.assistant .message-content {
+            background: var(--background);
+        }
+
+        .message-content h2 {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.25rem;
+        }
+
+        .message-content ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .message-content strong {
+            color: var(--primary);
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        #chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .send-btn {
+            padding: 0 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 900px) {
+            .demo-section {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sidebar .panel {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>AI Travel Planner</h1>
+        <p>LangChain-powered intelligent travel planning assistant</p>
+        <a href="https://github.com/yoon-gu/langchain-travel-planner" class="github-link">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            View on GitHub
+        </a>
+    </header>
+
+    <div class="container">
+        <section class="demo-section">
+            <aside class="sidebar">
+                <div class="panel">
+                    <h3>Popular Destinations</h3>
+                    <div class="dest-item" onclick="selectDest('Tokyo')">
+                        <div class="name">Tokyo</div>
+                        <div class="info">Japan</div>
+                        <div class="cost">~$150/day</div>
+                    </div>
+                    <div class="dest-item" onclick="selectDest('Paris')">
+                        <div class="name">Paris</div>
+                        <div class="info">France</div>
+                        <div class="cost">~$180/day</div>
+                    </div>
+                    <div class="dest-item" onclick="selectDest('Seoul')">
+                        <div class="name">Seoul</div>
+                        <div class="info">South Korea</div>
+                        <div class="cost">~$100/day</div>
+                    </div>
+                    <div class="dest-item" onclick="selectDest('Barcelona')">
+                        <div class="name">Barcelona</div>
+                        <div class="info">Spain</div>
+                        <div class="cost">~$130/day</div>
+                    </div>
+                    <div class="dest-item" onclick="selectDest('Bali')">
+                        <div class="name">Bali</div>
+                        <div class="info">Indonesia</div>
+                        <div class="cost">~$70/day</div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>Quick Actions</h3>
+                    <button class="action-btn" onclick="quickMsg('Recommend a destination')">Find Destinations</button>
+                    <button class="action-btn" onclick="quickMsg('Search for hotels')">Find Hotels</button>
+                    <button class="action-btn" onclick="quickMsg('What activities are available?')">Browse Activities</button>
+                    <button class="action-btn" onclick="quickMsg('Calculate my budget')">Calculate Budget</button>
+                    <button class="action-btn primary" onclick="quickMsg('Create my itinerary')">Generate Itinerary</button>
+                </div>
+            </aside>
+
+            <div class="chat-area">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <p>Hello! I'm your AI Travel Planner. I can help you:</p>
+                            <ul>
+                                <li>Find perfect destinations based on your interests</li>
+                                <li>Book accommodations that fit your budget</li>
+                                <li>Discover activities and must-see attractions</li>
+                                <li>Create detailed day-by-day itineraries</li>
+                                <li>Calculate budgets and find money-saving tips</li>
+                            </ul>
+                            <p>Where would you like to travel?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Tell me about your dream trip..." onkeypress="if(event.key==='Enter')sendMsg()">
+                    <button class="send-btn" onclick="sendMsg()">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Destination Search</h3>
+                <p>Search and compare destinations based on budget, season, and your interests with intelligent filtering.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Smart Recommendations</h3>
+                <p>AI-powered suggestions for hotels, activities, and restaurants tailored to your preferences.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Itinerary Generation</h3>
+                <p>Automatically create optimized day-by-day travel plans with time slots and budget estimates.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Budget Calculator</h3>
+                <p>Get detailed cost breakdowns including accommodations, food, activities, and transportation.</p>
+            </div>
+        </section>
+
+        <div class="tech-stack">
+            <span class="tech-badge">LangChain</span>
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">Flask</span>
+            <span class="tech-badge">OpenAI GPT-4</span>
+            <span class="tech-badge">Pydantic</span>
+            <span class="tech-badge">FAISS</span>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Demo showcasing LangChain capabilities for travel planning</p>
+        <p>Built with LangChain, Flask, and modern web technologies</p>
+    </footer>
+
+    <script>
+        const responses = {
+            tokyo: `<strong>Tokyo</strong> is an excellent choice!<br><br>
+<strong>Best Time:</strong> Spring (cherry blossoms) or Autumn<br>
+<strong>Daily Cost:</strong> ~$150 USD<br>
+<strong>Top Attractions:</strong><ul>
+<li>Senso-ji Temple in Asakusa</li>
+<li>Shibuya Crossing</li>
+<li>Meiji Shrine</li>
+<li>TeamLab Borderless</li></ul>
+<p>Would you like me to find hotels or create an itinerary?</p>`,
+
+            paris: `<strong>Paris</strong> - the City of Light awaits!<br><br>
+<strong>Best Time:</strong> April-June or September-October<br>
+<strong>Daily Cost:</strong> ~$180 USD<br>
+<strong>Must-See:</strong><ul>
+<li>Eiffel Tower at sunrise</li>
+<li>Louvre Museum</li>
+<li>Notre-Dame Cathedral</li>
+<li>Montmartre district</li></ul>
+<p>Shall I search for accommodations?</p>`,
+
+            seoul: `<strong>Seoul</strong> is perfect for K-culture lovers!<br><br>
+<strong>Best Time:</strong> Spring or Autumn<br>
+<strong>Daily Cost:</strong> ~$100 USD<br>
+<strong>Highlights:</strong><ul>
+<li>Gyeongbokgung Palace</li>
+<li>Bukchon Hanok Village</li>
+<li>Korean BBQ experience</li>
+<li>K-pop dance class</li></ul>
+<p>Ready to plan your Seoul adventure?</p>`,
+
+            barcelona: `<strong>Barcelona</strong> - architecture, beach, and culture!<br><br>
+<strong>Best Time:</strong> May-June or September<br>
+<strong>Daily Cost:</strong> ~$130 USD<br>
+<strong>Must-Visit:</strong><ul>
+<li>Sagrada Familia</li>
+<li>Park Guell</li>
+<li>La Rambla</li>
+<li>Gothic Quarter</li></ul>`,
+
+            bali: `<strong>Bali</strong> - tropical paradise awaits!<br><br>
+<strong>Best Time:</strong> April-October<br>
+<strong>Daily Cost:</strong> ~$70 USD<br>
+<strong>Experiences:</strong><ul>
+<li>Ubud Rice Terraces</li>
+<li>Temple visits</li>
+<li>Beach relaxation</li>
+<li>Yoga retreats</li></ul>`,
+
+            hotels: `Here are accommodation options:<br><br>
+<strong>Luxury ($$$$)</strong><br>
+Grand Hotel - $250/night, 4.8 rating<br><br>
+<strong>Mid-Range ($$$)</strong><br>
+City Center Hotel - $120/night, 4.5 rating<br><br>
+<strong>Budget ($$)</strong><br>
+Cozy Guesthouse - $45/night, 4.3 rating`,
+
+            activities: `<strong>Top Activities:</strong><br><br>
+<strong>Cultural</strong><ul>
+<li>Temple/Museum Visit (2-3 hrs, Free-$25)</li>
+<li>Walking Tour (3 hrs, $30)</li></ul>
+<strong>Food</strong><ul>
+<li>Street Food Tour (3 hrs, $60)</li>
+<li>Cooking Class (4 hrs, $80)</li></ul>
+<strong>Adventure</strong><ul>
+<li>Day Trip Excursion (6 hrs, $100)</li></ul>`,
+
+            budget: `<strong>Budget Estimate (5 days, moderate):</strong><br><br>
+<table style="width:100%">
+<tr><td>Accommodation</td><td>$600</td></tr>
+<tr><td>Food & Dining</td><td>$250</td></tr>
+<tr><td>Activities</td><td>$150</td></tr>
+<tr><td>Transportation</td><td>$100</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>$1,100</strong></td></tr>
+</table><br>
+<em>Excluding flights</em>`,
+
+            itinerary: `<h2>5-Day Adventure Itinerary</h2>
+<strong>Day 1: Arrival</strong><br>
+09:00 - Check-in<br>
+14:00 - City exploration<br>
+19:00 - Welcome dinner<br><br>
+<strong>Day 2: Culture</strong><br>
+09:00 - Temple/landmark visit<br>
+14:00 - Museum exploration<br>
+19:00 - Local dining<br><br>
+<strong>Day 3: Local Life</strong><br>
+10:00 - Cooking class<br>
+15:00 - Market visit<br>
+19:00 - Street food tour<br><br>
+<strong>Day 4: Adventure</strong><br>
+08:00 - Day trip excursion<br>
+19:00 - Farewell dinner<br><br>
+<strong>Day 5: Departure</strong><br>
+10:00 - Last shopping<br>
+12:00 - Check-out<br><br>
+<em>Estimated Budget: $1,100</em>`,
+
+            recommend: `<strong>Top Recommendations:</strong><br><br>
+<strong>1. Tokyo</strong> - Culture, food, tech (~$150/day)<br>
+<strong>2. Barcelona</strong> - Architecture, beach (~$130/day)<br>
+<strong>3. Seoul</strong> - K-culture, shopping (~$100/day)<br>
+<strong>4. Bali</strong> - Relaxation, nature (~$70/day)<br><br>
+What type of experience interests you most?`,
+
+            default: `I can help you plan your perfect trip! Try:<br><br>
+<ul>
+<li>"I want to visit Tokyo"</li>
+<li>"Find hotels for my trip"</li>
+<li>"What's the budget for Paris?"</li>
+<li>"Create my itinerary"</li>
+</ul>`
+        };
+
+        function selectDest(dest) {
+            quickMsg(`I want to visit ${dest}`);
+        }
+
+        function quickMsg(msg) {
+            document.getElementById('chat-input').value = msg;
+            sendMsg();
+        }
+
+        function sendMsg() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            addMessage(msg, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const response = getResponse(msg.toLowerCase());
+                addMessage(response, 'assistant');
+            }, 500);
+        }
+
+        function getResponse(msg) {
+            if (msg.includes('tokyo') || msg.includes('japan')) return responses.tokyo;
+            if (msg.includes('paris') || msg.includes('france')) return responses.paris;
+            if (msg.includes('seoul') || msg.includes('korea')) return responses.seoul;
+            if (msg.includes('barcelona') || msg.includes('spain')) return responses.barcelona;
+            if (msg.includes('bali') || msg.includes('indonesia')) return responses.bali;
+            if (msg.includes('hotel') || msg.includes('stay') || msg.includes('accommodation')) return responses.hotels;
+            if (msg.includes('activity') || msg.includes('things to do')) return responses.activities;
+            if (msg.includes('budget') || msg.includes('cost')) return responses.budget;
+            if (msg.includes('itinerary') || msg.includes('plan')) return responses.itinerary;
+            if (msg.includes('recommend') || msg.includes('suggest')) return responses.recommend;
+            return responses.default;
+        }
+
+        function addMessage(content, role) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `<div class="message-content">${role === 'user' ? content : content}</div>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+</html>
