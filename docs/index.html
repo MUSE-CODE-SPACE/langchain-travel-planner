@@ -36,6 +36,29 @@
         .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
         .header p { opacity: 0.9; }
 
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
         .github-link {
             display: inline-flex;
             align-items: center;
@@ -150,9 +173,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .message.user {
-            margin-left: auto;
-        }
+        .message.user { margin-left: auto; }
 
         .message-content {
             padding: 1rem;
@@ -201,9 +222,7 @@
             outline: none;
         }
 
-        #chat-input:focus {
-            border-color: var(--primary);
-        }
+        #chat-input:focus { border-color: var(--primary); }
 
         .send-btn {
             padding: 0 1.5rem;
@@ -215,9 +234,7 @@
             font-weight: 600;
         }
 
-        .send-btn:hover {
-            background: var(--primary-dark);
-        }
+        .send-btn:hover { background: var(--primary-dark); }
 
         .features {
             display: grid;
@@ -261,29 +278,26 @@
         }
 
         @media (max-width: 900px) {
-            .demo-section {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            .sidebar .panel {
-                flex: 1;
-                min-width: 200px;
-            }
+            .demo-section { grid-template-columns: 1fr; }
+            .sidebar { flex-direction: row; flex-wrap: wrap; }
+            .sidebar .panel { flex: 1; min-width: 200px; }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>AI Travel Planner</h1>
-        <p>LangChain-powered intelligent travel planning assistant</p>
-        <a href="https://github.com/yoon-gu/langchain-travel-planner" class="github-link">
+        <h1 id="title">AI Travel Planner</h1>
+        <p id="subtitle">LangChain-powered intelligent travel planning assistant</p>
+        <div class="language-selector">
+            <button class="lang-btn active" onclick="setLanguage('en')">English</button>
+            <button class="lang-btn" onclick="setLanguage('ko')">한국어</button>
+            <button class="lang-btn" onclick="setLanguage('ja')">日本語</button>
+        </div>
+        <a href="https://github.com/yoon-k/langchain-travel-planner" class="github-link">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
             </svg>
-            View on GitHub
+            <span id="github-text">View on GitHub</span>
         </a>
     </header>
 
@@ -291,84 +305,53 @@
         <section class="demo-section">
             <aside class="sidebar">
                 <div class="panel">
-                    <h3>Popular Destinations</h3>
+                    <h3 id="dest-title">Popular Destinations</h3>
                     <div class="dest-item" onclick="selectDest('Tokyo')">
                         <div class="name">Tokyo</div>
-                        <div class="info">Japan</div>
+                        <div class="info" data-i18n="japan">Japan</div>
                         <div class="cost">~$150/day</div>
                     </div>
                     <div class="dest-item" onclick="selectDest('Paris')">
                         <div class="name">Paris</div>
-                        <div class="info">France</div>
+                        <div class="info" data-i18n="france">France</div>
                         <div class="cost">~$180/day</div>
                     </div>
                     <div class="dest-item" onclick="selectDest('Seoul')">
                         <div class="name">Seoul</div>
-                        <div class="info">South Korea</div>
+                        <div class="info" data-i18n="korea">South Korea</div>
                         <div class="cost">~$100/day</div>
                     </div>
                     <div class="dest-item" onclick="selectDest('Barcelona')">
                         <div class="name">Barcelona</div>
-                        <div class="info">Spain</div>
+                        <div class="info" data-i18n="spain">Spain</div>
                         <div class="cost">~$130/day</div>
                     </div>
                     <div class="dest-item" onclick="selectDest('Bali')">
                         <div class="name">Bali</div>
-                        <div class="info">Indonesia</div>
+                        <div class="info" data-i18n="indonesia">Indonesia</div>
                         <div class="cost">~$70/day</div>
                     </div>
                 </div>
                 <div class="panel">
-                    <h3>Quick Actions</h3>
-                    <button class="action-btn" onclick="quickMsg('Recommend a destination')">Find Destinations</button>
-                    <button class="action-btn" onclick="quickMsg('Search for hotels')">Find Hotels</button>
-                    <button class="action-btn" onclick="quickMsg('What activities are available?')">Browse Activities</button>
-                    <button class="action-btn" onclick="quickMsg('Calculate my budget')">Calculate Budget</button>
-                    <button class="action-btn primary" onclick="quickMsg('Create my itinerary')">Generate Itinerary</button>
+                    <h3 id="actions-title">Quick Actions</h3>
+                    <button class="action-btn" id="btn-dest" onclick="quickAction('dest')">Find Destinations</button>
+                    <button class="action-btn" id="btn-hotel" onclick="quickAction('hotel')">Find Hotels</button>
+                    <button class="action-btn" id="btn-activity" onclick="quickAction('activity')">Browse Activities</button>
+                    <button class="action-btn" id="btn-budget" onclick="quickAction('budget')">Calculate Budget</button>
+                    <button class="action-btn primary" id="btn-itinerary" onclick="quickAction('itinerary')">Generate Itinerary</button>
                 </div>
             </aside>
 
             <div class="chat-area">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message assistant">
-                        <div class="message-content">
-                            <p>Hello! I'm your AI Travel Planner. I can help you:</p>
-                            <ul>
-                                <li>Find perfect destinations based on your interests</li>
-                                <li>Book accommodations that fit your budget</li>
-                                <li>Discover activities and must-see attractions</li>
-                                <li>Create detailed day-by-day itineraries</li>
-                                <li>Calculate budgets and find money-saving tips</li>
-                            </ul>
-                            <p>Where would you like to travel?</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="chat-messages" id="chat-messages"></div>
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Tell me about your dream trip..." onkeypress="if(event.key==='Enter')sendMsg()">
-                    <button class="send-btn" onclick="sendMsg()">Send</button>
+                    <button class="send-btn" id="send-btn" onclick="sendMsg()">Send</button>
                 </div>
             </div>
         </section>
 
-        <section class="features">
-            <div class="feature-card">
-                <h3>Destination Search</h3>
-                <p>Search and compare destinations based on budget, season, and your interests with intelligent filtering.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Smart Recommendations</h3>
-                <p>AI-powered suggestions for hotels, activities, and restaurants tailored to your preferences.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Itinerary Generation</h3>
-                <p>Automatically create optimized day-by-day travel plans with time slots and budget estimates.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Budget Calculator</h3>
-                <p>Get detailed cost breakdowns including accommodations, food, activities, and transportation.</p>
-            </div>
-        </section>
+        <section class="features" id="features"></section>
 
         <div class="tech-stack">
             <span class="tech-badge">LangChain</span>
@@ -381,131 +364,195 @@
     </div>
 
     <footer class="footer">
-        <p>Demo showcasing LangChain capabilities for travel planning</p>
-        <p>Built with LangChain, Flask, and modern web technologies</p>
+        <p id="footer-text">Demo showcasing LangChain capabilities for travel planning</p>
     </footer>
 
     <script>
-        const responses = {
-            tokyo: `<strong>Tokyo</strong> is an excellent choice!<br><br>
-<strong>Best Time:</strong> Spring (cherry blossoms) or Autumn<br>
-<strong>Daily Cost:</strong> ~$150 USD<br>
-<strong>Top Attractions:</strong><ul>
-<li>Senso-ji Temple in Asakusa</li>
-<li>Shibuya Crossing</li>
-<li>Meiji Shrine</li>
-<li>TeamLab Borderless</li></ul>
-<p>Would you like me to find hotels or create an itinerary?</p>`,
+        let currentLang = 'en';
 
-            paris: `<strong>Paris</strong> - the City of Light awaits!<br><br>
-<strong>Best Time:</strong> April-June or September-October<br>
-<strong>Daily Cost:</strong> ~$180 USD<br>
-<strong>Must-See:</strong><ul>
-<li>Eiffel Tower at sunrise</li>
-<li>Louvre Museum</li>
-<li>Notre-Dame Cathedral</li>
-<li>Montmartre district</li></ul>
-<p>Shall I search for accommodations?</p>`,
-
-            seoul: `<strong>Seoul</strong> is perfect for K-culture lovers!<br><br>
-<strong>Best Time:</strong> Spring or Autumn<br>
-<strong>Daily Cost:</strong> ~$100 USD<br>
-<strong>Highlights:</strong><ul>
-<li>Gyeongbokgung Palace</li>
-<li>Bukchon Hanok Village</li>
-<li>Korean BBQ experience</li>
-<li>K-pop dance class</li></ul>
-<p>Ready to plan your Seoul adventure?</p>`,
-
-            barcelona: `<strong>Barcelona</strong> - architecture, beach, and culture!<br><br>
-<strong>Best Time:</strong> May-June or September<br>
-<strong>Daily Cost:</strong> ~$130 USD<br>
-<strong>Must-Visit:</strong><ul>
-<li>Sagrada Familia</li>
-<li>Park Guell</li>
-<li>La Rambla</li>
-<li>Gothic Quarter</li></ul>`,
-
-            bali: `<strong>Bali</strong> - tropical paradise awaits!<br><br>
-<strong>Best Time:</strong> April-October<br>
-<strong>Daily Cost:</strong> ~$70 USD<br>
-<strong>Experiences:</strong><ul>
-<li>Ubud Rice Terraces</li>
-<li>Temple visits</li>
-<li>Beach relaxation</li>
-<li>Yoga retreats</li></ul>`,
-
-            hotels: `Here are accommodation options:<br><br>
-<strong>Luxury ($$$$)</strong><br>
-Grand Hotel - $250/night, 4.8 rating<br><br>
-<strong>Mid-Range ($$$)</strong><br>
-City Center Hotel - $120/night, 4.5 rating<br><br>
-<strong>Budget ($$)</strong><br>
-Cozy Guesthouse - $45/night, 4.3 rating`,
-
-            activities: `<strong>Top Activities:</strong><br><br>
-<strong>Cultural</strong><ul>
-<li>Temple/Museum Visit (2-3 hrs, Free-$25)</li>
-<li>Walking Tour (3 hrs, $30)</li></ul>
-<strong>Food</strong><ul>
-<li>Street Food Tour (3 hrs, $60)</li>
-<li>Cooking Class (4 hrs, $80)</li></ul>
-<strong>Adventure</strong><ul>
-<li>Day Trip Excursion (6 hrs, $100)</li></ul>`,
-
-            budget: `<strong>Budget Estimate (5 days, moderate):</strong><br><br>
-<table style="width:100%">
-<tr><td>Accommodation</td><td>$600</td></tr>
-<tr><td>Food & Dining</td><td>$250</td></tr>
-<tr><td>Activities</td><td>$150</td></tr>
-<tr><td>Transportation</td><td>$100</td></tr>
-<tr><td><strong>Total</strong></td><td><strong>$1,100</strong></td></tr>
-</table><br>
-<em>Excluding flights</em>`,
-
-            itinerary: `<h2>5-Day Adventure Itinerary</h2>
-<strong>Day 1: Arrival</strong><br>
-09:00 - Check-in<br>
-14:00 - City exploration<br>
-19:00 - Welcome dinner<br><br>
-<strong>Day 2: Culture</strong><br>
-09:00 - Temple/landmark visit<br>
-14:00 - Museum exploration<br>
-19:00 - Local dining<br><br>
-<strong>Day 3: Local Life</strong><br>
-10:00 - Cooking class<br>
-15:00 - Market visit<br>
-19:00 - Street food tour<br><br>
-<strong>Day 4: Adventure</strong><br>
-08:00 - Day trip excursion<br>
-19:00 - Farewell dinner<br><br>
-<strong>Day 5: Departure</strong><br>
-10:00 - Last shopping<br>
-12:00 - Check-out<br><br>
-<em>Estimated Budget: $1,100</em>`,
-
-            recommend: `<strong>Top Recommendations:</strong><br><br>
-<strong>1. Tokyo</strong> - Culture, food, tech (~$150/day)<br>
-<strong>2. Barcelona</strong> - Architecture, beach (~$130/day)<br>
-<strong>3. Seoul</strong> - K-culture, shopping (~$100/day)<br>
-<strong>4. Bali</strong> - Relaxation, nature (~$70/day)<br><br>
-What type of experience interests you most?`,
-
-            default: `I can help you plan your perfect trip! Try:<br><br>
-<ul>
-<li>"I want to visit Tokyo"</li>
-<li>"Find hotels for my trip"</li>
-<li>"What's the budget for Paris?"</li>
-<li>"Create my itinerary"</li>
-</ul>`
+        const i18n = {
+            en: {
+                title: "AI Travel Planner",
+                subtitle: "LangChain-powered intelligent travel planning assistant",
+                github: "View on GitHub",
+                destTitle: "Popular Destinations",
+                actionsTitle: "Quick Actions",
+                btnDest: "Find Destinations",
+                btnHotel: "Find Hotels",
+                btnActivity: "Browse Activities",
+                btnBudget: "Calculate Budget",
+                btnItinerary: "Generate Itinerary",
+                placeholder: "Tell me about your dream trip...",
+                send: "Send",
+                footer: "Demo showcasing LangChain capabilities for travel planning",
+                japan: "Japan", france: "France", korea: "South Korea", spain: "Spain", indonesia: "Indonesia",
+                features: [
+                    { title: "Destination Search", desc: "Search and compare destinations based on budget, season, and your interests." },
+                    { title: "Smart Recommendations", desc: "AI-powered suggestions for hotels, activities, and restaurants." },
+                    { title: "Itinerary Generation", desc: "Automatically create optimized day-by-day travel plans." },
+                    { title: "Budget Calculator", desc: "Get detailed cost breakdowns for your trip." }
+                ],
+                welcome: `<p>Hello! I'm your AI Travel Planner. I can help you:</p>
+                    <ul>
+                        <li>Find perfect destinations based on your interests</li>
+                        <li>Book accommodations that fit your budget</li>
+                        <li>Discover activities and must-see attractions</li>
+                        <li>Create detailed day-by-day itineraries</li>
+                    </ul>
+                    <p>Where would you like to travel?</p>`,
+                responses: {
+                    tokyo: `<strong>Tokyo</strong> is an excellent choice!<br><br><strong>Best Time:</strong> Spring or Autumn<br><strong>Daily Cost:</strong> ~$150 USD<br><strong>Top Attractions:</strong><ul><li>Senso-ji Temple</li><li>Shibuya Crossing</li><li>Meiji Shrine</li><li>TeamLab Borderless</li></ul><p>Would you like me to find hotels or create an itinerary?</p>`,
+                    paris: `<strong>Paris</strong> - the City of Light awaits!<br><br><strong>Best Time:</strong> April-June<br><strong>Daily Cost:</strong> ~$180 USD<br><strong>Must-See:</strong><ul><li>Eiffel Tower</li><li>Louvre Museum</li><li>Notre-Dame</li><li>Montmartre</li></ul>`,
+                    seoul: `<strong>Seoul</strong> is perfect for K-culture lovers!<br><br><strong>Best Time:</strong> Spring or Autumn<br><strong>Daily Cost:</strong> ~$100 USD<br><strong>Highlights:</strong><ul><li>Gyeongbokgung Palace</li><li>Bukchon Hanok Village</li><li>Korean BBQ</li></ul>`,
+                    hotels: `<strong>Accommodation Options:</strong><br><br><strong>Luxury:</strong> Grand Hotel - $250/night<br><strong>Mid-Range:</strong> City Center Hotel - $120/night<br><strong>Budget:</strong> Cozy Guesthouse - $45/night`,
+                    activities: `<strong>Top Activities:</strong><br><br><strong>Cultural:</strong> Temple/Museum Visit - $25<br><strong>Food:</strong> Street Food Tour - $60<br><strong>Adventure:</strong> Day Trip - $100`,
+                    budget: `<strong>Budget Estimate (5 days):</strong><br><br>Accommodation: $600<br>Food: $250<br>Activities: $150<br>Transport: $100<br><strong>Total: $1,100</strong>`,
+                    itinerary: `<h2>5-Day Itinerary</h2><strong>Day 1:</strong> Arrival, City exploration<br><strong>Day 2:</strong> Cultural sites<br><strong>Day 3:</strong> Local experience<br><strong>Day 4:</strong> Day trip<br><strong>Day 5:</strong> Shopping, Departure`,
+                    recommend: `<strong>Top Recommendations:</strong><br><br>1. Tokyo - Culture & Tech (~$150/day)<br>2. Barcelona - Beach & Art (~$130/day)<br>3. Seoul - K-culture (~$100/day)<br>4. Bali - Nature (~$70/day)`,
+                    default: `I can help you plan your trip! Try asking about destinations, hotels, activities, or budgets.`
+                }
+            },
+            ko: {
+                title: "AI 여행 플래너",
+                subtitle: "LangChain 기반 지능형 여행 계획 도우미",
+                github: "GitHub에서 보기",
+                destTitle: "인기 여행지",
+                actionsTitle: "빠른 메뉴",
+                btnDest: "여행지 찾기",
+                btnHotel: "호텔 검색",
+                btnActivity: "액티비티 찾기",
+                btnBudget: "예산 계산",
+                btnItinerary: "일정 생성",
+                placeholder: "꿈꾸는 여행에 대해 말씀해주세요...",
+                send: "전송",
+                footer: "LangChain 여행 계획 기능 데모",
+                japan: "일본", france: "프랑스", korea: "대한민국", spain: "스페인", indonesia: "인도네시아",
+                features: [
+                    { title: "여행지 검색", desc: "예산, 시즌, 관심사에 따라 여행지를 검색하고 비교하세요." },
+                    { title: "스마트 추천", desc: "AI 기반 호텔, 액티비티, 레스토랑 추천." },
+                    { title: "일정 생성", desc: "최적화된 일별 여행 계획을 자동으로 생성합니다." },
+                    { title: "예산 계산기", desc: "여행 비용을 상세하게 분석합니다." }
+                ],
+                welcome: `<p>안녕하세요! AI 여행 플래너입니다. 도움을 드릴 수 있는 것들:</p>
+                    <ul>
+                        <li>관심사에 맞는 완벽한 여행지 찾기</li>
+                        <li>예산에 맞는 숙소 예약</li>
+                        <li>액티비티와 필수 관광지 발견</li>
+                        <li>상세한 일별 일정 만들기</li>
+                    </ul>
+                    <p>어디로 여행하고 싶으신가요?</p>`,
+                responses: {
+                    tokyo: `<strong>도쿄</strong>는 훌륭한 선택입니다!<br><br><strong>최적 시기:</strong> 봄 또는 가을<br><strong>일일 비용:</strong> ~$150 USD<br><strong>인기 명소:</strong><ul><li>센소지 사원</li><li>시부야 교차로</li><li>메이지 신궁</li><li>팀랩 보더리스</li></ul><p>호텔을 찾거나 일정을 만들어 드릴까요?</p>`,
+                    paris: `<strong>파리</strong> - 빛의 도시가 기다립니다!<br><br><strong>최적 시기:</strong> 4-6월<br><strong>일일 비용:</strong> ~$180 USD<br><strong>필수 코스:</strong><ul><li>에펠탑</li><li>루브르 박물관</li><li>노트르담 대성당</li><li>몽마르트르</li></ul>`,
+                    seoul: `<strong>서울</strong>은 K-컬처 팬에게 완벽합니다!<br><br><strong>최적 시기:</strong> 봄 또는 가을<br><strong>일일 비용:</strong> ~$100 USD<br><strong>하이라이트:</strong><ul><li>경복궁</li><li>북촌 한옥마을</li><li>한국 BBQ</li></ul>`,
+                    hotels: `<strong>숙소 옵션:</strong><br><br><strong>럭셔리:</strong> 그랜드 호텔 - $250/박<br><strong>중급:</strong> 시티 센터 호텔 - $120/박<br><strong>저렴:</strong> 아늑한 게스트하우스 - $45/박`,
+                    activities: `<strong>인기 액티비티:</strong><br><br><strong>문화:</strong> 사원/박물관 방문 - $25<br><strong>음식:</strong> 길거리 음식 투어 - $60<br><strong>모험:</strong> 당일치기 여행 - $100`,
+                    budget: `<strong>예산 추정 (5일):</strong><br><br>숙박: $600<br>식비: $250<br>액티비티: $150<br>교통: $100<br><strong>총합: $1,100</strong>`,
+                    itinerary: `<h2>5일 일정</h2><strong>1일차:</strong> 도착, 도시 탐험<br><strong>2일차:</strong> 문화 명소<br><strong>3일차:</strong> 로컬 체험<br><strong>4일차:</strong> 당일치기 여행<br><strong>5일차:</strong> 쇼핑, 출발`,
+                    recommend: `<strong>추천 여행지:</strong><br><br>1. 도쿄 - 문화 & 기술 (~$150/일)<br>2. 바르셀로나 - 해변 & 예술 (~$130/일)<br>3. 서울 - K-컬처 (~$100/일)<br>4. 발리 - 자연 (~$70/일)`,
+                    default: `여행 계획을 도와드릴게요! 여행지, 호텔, 액티비티, 예산에 대해 물어보세요.`
+                }
+            },
+            ja: {
+                title: "AI旅行プランナー",
+                subtitle: "LangChain搭載のインテリジェント旅行計画アシスタント",
+                github: "GitHubで見る",
+                destTitle: "人気の目的地",
+                actionsTitle: "クイックアクション",
+                btnDest: "目的地を探す",
+                btnHotel: "ホテル検索",
+                btnActivity: "アクティビティ",
+                btnBudget: "予算計算",
+                btnItinerary: "旅程を作成",
+                placeholder: "夢の旅行について教えてください...",
+                send: "送信",
+                footer: "LangChainの旅行計画機能デモ",
+                japan: "日本", france: "フランス", korea: "韓国", spain: "スペイン", indonesia: "インドネシア",
+                features: [
+                    { title: "目的地検索", desc: "予算、シーズン、興味に基づいて目的地を検索・比較。" },
+                    { title: "スマート推薦", desc: "AIによるホテル、アクティビティ、レストランの提案。" },
+                    { title: "旅程生成", desc: "最適化された日別旅行プランを自動作成。" },
+                    { title: "予算計算機", desc: "旅行費用の詳細な内訳を取得。" }
+                ],
+                welcome: `<p>こんにちは！AI旅行プランナーです。お手伝いできること：</p>
+                    <ul>
+                        <li>興味に合った完璧な目的地を見つける</li>
+                        <li>予算に合った宿泊施設を予約</li>
+                        <li>アクティビティと必見スポットを発見</li>
+                        <li>詳細な日別旅程を作成</li>
+                    </ul>
+                    <p>どこへ旅行したいですか？</p>`,
+                responses: {
+                    tokyo: `<strong>東京</strong>は素晴らしい選択です！<br><br><strong>ベストシーズン:</strong> 春または秋<br><strong>1日の費用:</strong> ~$150 USD<br><strong>人気スポット:</strong><ul><li>浅草寺</li><li>渋谷スクランブル交差点</li><li>明治神宮</li><li>チームラボボーダレス</li></ul><p>ホテルを探しますか？旅程を作成しましょうか？</p>`,
+                    paris: `<strong>パリ</strong> - 光の街があなたを待っています！<br><br><strong>ベストシーズン:</strong> 4-6月<br><strong>1日の費用:</strong> ~$180 USD<br><strong>必見:</strong><ul><li>エッフェル塔</li><li>ルーブル美術館</li><li>ノートルダム大聖堂</li><li>モンマルトル</li></ul>`,
+                    seoul: `<strong>ソウル</strong>はK-カルチャーファンに最適！<br><br><strong>ベストシーズン:</strong> 春または秋<br><strong>1日の費用:</strong> ~$100 USD<br><strong>ハイライト:</strong><ul><li>景福宮</li><li>北村韓屋村</li><li>韓国BBQ</li></ul>`,
+                    hotels: `<strong>宿泊オプション:</strong><br><br><strong>ラグジュアリー:</strong> グランドホテル - $250/泊<br><strong>ミッドレンジ:</strong> シティセンターホテル - $120/泊<br><strong>バジェット:</strong> コージーゲストハウス - $45/泊`,
+                    activities: `<strong>人気アクティビティ:</strong><br><br><strong>文化:</strong> 寺院/美術館訪問 - $25<br><strong>グルメ:</strong> 屋台ツアー - $60<br><strong>冒険:</strong> 日帰り旅行 - $100`,
+                    budget: `<strong>予算見積もり（5日間）:</strong><br><br>宿泊: $600<br>食事: $250<br>アクティビティ: $150<br>交通: $100<br><strong>合計: $1,100</strong>`,
+                    itinerary: `<h2>5日間の旅程</h2><strong>1日目:</strong> 到着、街の探索<br><strong>2日目:</strong> 文化スポット<br><strong>3日目:</strong> ローカル体験<br><strong>4日目:</strong> 日帰り旅行<br><strong>5日目:</strong> ショッピング、出発`,
+                    recommend: `<strong>おすすめの目的地:</strong><br><br>1. 東京 - 文化＆テック (~$150/日)<br>2. バルセロナ - ビーチ＆アート (~$130/日)<br>3. ソウル - Kカルチャー (~$100/日)<br>4. バリ - 自然 (~$70/日)`,
+                    default: `旅行の計画をお手伝いします！目的地、ホテル、アクティビティ、予算について聞いてください。`
+                }
+            }
         };
 
-        function selectDest(dest) {
-            quickMsg(`I want to visit ${dest}`);
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('github-text').textContent = t.github;
+            document.getElementById('dest-title').textContent = t.destTitle;
+            document.getElementById('actions-title').textContent = t.actionsTitle;
+            document.getElementById('btn-dest').textContent = t.btnDest;
+            document.getElementById('btn-hotel').textContent = t.btnHotel;
+            document.getElementById('btn-activity').textContent = t.btnActivity;
+            document.getElementById('btn-budget').textContent = t.btnBudget;
+            document.getElementById('btn-itinerary').textContent = t.btnItinerary;
+            document.getElementById('chat-input').placeholder = t.placeholder;
+            document.getElementById('send-btn').textContent = t.send;
+            document.getElementById('footer-text').textContent = t.footer;
+
+            // Update country names
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t[el.dataset.i18n] || el.textContent;
+            });
+
+            // Update features
+            const featuresHtml = t.features.map(f => `
+                <div class="feature-card">
+                    <h3>${f.title}</h3>
+                    <p>${f.desc}</p>
+                </div>
+            `).join('');
+            document.getElementById('features').innerHTML = featuresHtml;
+
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Reset chat with welcome message
+            document.getElementById('chat-messages').innerHTML = '';
+            addMessage(t.welcome, 'assistant');
         }
 
-        function quickMsg(msg) {
-            document.getElementById('chat-input').value = msg;
+        function selectDest(dest) {
+            const msgs = { en: `I want to visit ${dest}`, ko: `${dest}에 가고 싶어요`, ja: `${dest}に行きたいです` };
+            document.getElementById('chat-input').value = msgs[currentLang];
+            sendMsg();
+        }
+
+        function quickAction(action) {
+            const t = i18n[currentLang];
+            const msgs = {
+                dest: { en: "Recommend a destination", ko: "여행지 추천해주세요", ja: "おすすめの目的地を教えて" },
+                hotel: { en: "Search for hotels", ko: "호텔을 검색해주세요", ja: "ホテルを検索して" },
+                activity: { en: "What activities are available?", ko: "어떤 액티비티가 있나요?", ja: "どんなアクティビティがありますか？" },
+                budget: { en: "Calculate my budget", ko: "예산을 계산해주세요", ja: "予算を計算して" },
+                itinerary: { en: "Create my itinerary", ko: "일정을 만들어주세요", ja: "旅程を作成して" }
+            };
+            document.getElementById('chat-input').value = msgs[action][currentLang];
             sendMsg();
         }
 
@@ -524,27 +571,29 @@ What type of experience interests you most?`,
         }
 
         function getResponse(msg) {
-            if (msg.includes('tokyo') || msg.includes('japan')) return responses.tokyo;
-            if (msg.includes('paris') || msg.includes('france')) return responses.paris;
-            if (msg.includes('seoul') || msg.includes('korea')) return responses.seoul;
-            if (msg.includes('barcelona') || msg.includes('spain')) return responses.barcelona;
-            if (msg.includes('bali') || msg.includes('indonesia')) return responses.bali;
-            if (msg.includes('hotel') || msg.includes('stay') || msg.includes('accommodation')) return responses.hotels;
-            if (msg.includes('activity') || msg.includes('things to do')) return responses.activities;
-            if (msg.includes('budget') || msg.includes('cost')) return responses.budget;
-            if (msg.includes('itinerary') || msg.includes('plan')) return responses.itinerary;
-            if (msg.includes('recommend') || msg.includes('suggest')) return responses.recommend;
-            return responses.default;
+            const r = i18n[currentLang].responses;
+            if (msg.includes('tokyo') || msg.includes('도쿄') || msg.includes('東京')) return r.tokyo;
+            if (msg.includes('paris') || msg.includes('파리') || msg.includes('パリ')) return r.paris;
+            if (msg.includes('seoul') || msg.includes('서울') || msg.includes('ソウル')) return r.seoul;
+            if (msg.includes('hotel') || msg.includes('호텔') || msg.includes('ホテル') || msg.includes('숙소')) return r.hotels;
+            if (msg.includes('activity') || msg.includes('액티비티') || msg.includes('アクティビティ')) return r.activities;
+            if (msg.includes('budget') || msg.includes('예산') || msg.includes('予算')) return r.budget;
+            if (msg.includes('itinerary') || msg.includes('일정') || msg.includes('旅程')) return r.itinerary;
+            if (msg.includes('recommend') || msg.includes('추천') || msg.includes('おすすめ')) return r.recommend;
+            return r.default;
         }
 
         function addMessage(content, role) {
             const container = document.getElementById('chat-messages');
             const div = document.createElement('div');
             div.className = `message ${role}`;
-            div.innerHTML = `<div class="message-content">${role === 'user' ? content : content}</div>`;
+            div.innerHTML = `<div class="message-content">${content}</div>`;
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => setLanguage('en'));
     </script>
 </body>
 </html>
