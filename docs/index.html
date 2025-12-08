@@ -292,6 +292,7 @@
             <button class="lang-btn active" onclick="setLanguage('en')">English</button>
             <button class="lang-btn" onclick="setLanguage('ko')">한국어</button>
             <button class="lang-btn" onclick="setLanguage('ja')">日本語</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">中文</button>
         </div>
         <a href="https://github.com/yoon-k/langchain-travel-planner" class="github-link">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -493,6 +494,47 @@
                     recommend: `<strong>おすすめの目的地:</strong><br><br>1. 東京 - 文化＆テック (~$150/日)<br>2. バルセロナ - ビーチ＆アート (~$130/日)<br>3. ソウル - Kカルチャー (~$100/日)<br>4. バリ - 自然 (~$70/日)`,
                     default: `旅行の計画をお手伝いします！目的地、ホテル、アクティビティ、予算について聞いてください。`
                 }
+            },
+            zh: {
+                title: "AI旅行规划师",
+                subtitle: "LangChain驱动的智能旅行规划助手",
+                github: "在GitHub上查看",
+                destTitle: "热门目的地",
+                actionsTitle: "快速操作",
+                btnDest: "查找目的地",
+                btnHotel: "查找酒店",
+                btnActivity: "浏览活动",
+                btnBudget: "计算预算",
+                btnItinerary: "生成行程",
+                placeholder: "告诉我您的梦想之旅...",
+                send: "发送",
+                footer: "展示LangChain旅行规划功能的演示",
+                japan: "日本", france: "法国", korea: "韩国", spain: "西班牙", indonesia: "印度尼西亚",
+                features: [
+                    { title: "目的地搜索", desc: "根据预算、季节和兴趣搜索并比较目的地。" },
+                    { title: "智能推荐", desc: "AI驱动的酒店、活动和餐厅建议。" },
+                    { title: "行程生成", desc: "自动创建优化的每日旅行计划。" },
+                    { title: "预算计算器", desc: "获取您旅行的详细费用明细。" }
+                ],
+                welcome: `<p>您好！我是您的AI旅行规划师。我可以帮您：</p>
+                    <ul>
+                        <li>根据您的兴趣找到完美的目的地</li>
+                        <li>预订符合您预算的住宿</li>
+                        <li>发现活动和必看景点</li>
+                        <li>创建详细的每日行程</li>
+                    </ul>
+                    <p>您想去哪里旅行？</p>`,
+                responses: {
+                    tokyo: `<strong>东京</strong>是个绝佳的选择！<br><br><strong>最佳时间：</strong>春季或秋季<br><strong>每日费用：</strong>~$150 USD<br><strong>热门景点：</strong><ul><li>浅草寺</li><li>涩谷十字路口</li><li>明治神宫</li><li>TeamLab Borderless</li></ul><p>需要我找酒店或创建行程吗？</p>`,
+                    paris: `<strong>巴黎</strong> - 光之城在等着您！<br><br><strong>最佳时间：</strong>4-6月<br><strong>每日费用：</strong>~$180 USD<br><strong>必看：</strong><ul><li>埃菲尔铁塔</li><li>卢浮宫</li><li>巴黎圣母院</li><li>蒙马特</li></ul>`,
+                    seoul: `<strong>首尔</strong>非常适合K文化爱好者！<br><br><strong>最佳时间：</strong>春季或秋季<br><strong>每日费用：</strong>~$100 USD<br><strong>亮点：</strong><ul><li>景福宫</li><li>北村韩屋村</li><li>韩式烤肉</li></ul>`,
+                    hotels: `<strong>住宿选择：</strong><br><br><strong>豪华：</strong>大酒店 - $250/晚<br><strong>中档：</strong>市中心酒店 - $120/晚<br><strong>经济：</strong>舒适宾馆 - $45/晚`,
+                    activities: `<strong>热门活动：</strong><br><br><strong>文化：</strong>寺庙/博物馆参观 - $25<br><strong>美食：</strong>街头美食之旅 - $60<br><strong>冒险：</strong>一日游 - $100`,
+                    budget: `<strong>预算估算（5天）：</strong><br><br>住宿：$600<br>餐饮：$250<br>活动：$150<br>交通：$100<br><strong>总计：$1,100</strong>`,
+                    itinerary: `<h2>5天行程</h2><strong>第1天：</strong>到达，城市探索<br><strong>第2天：</strong>文化景点<br><strong>第3天：</strong>当地体验<br><strong>第4天：</strong>一日游<br><strong>第5天：</strong>购物，出发`,
+                    recommend: `<strong>推荐目的地：</strong><br><br>1. 东京 - 文化与科技 (~$150/天)<br>2. 巴塞罗那 - 海滩与艺术 (~$130/天)<br>3. 首尔 - K文化 (~$100/天)<br>4. 巴厘岛 - 自然 (~$70/天)`,
+                    default: `我可以帮您规划旅行！尝试询问目的地、酒店、活动或预算。`
+                }
             }
         };
 
@@ -538,7 +580,7 @@
         }
 
         function selectDest(dest) {
-            const msgs = { en: `I want to visit ${dest}`, ko: `${dest}에 가고 싶어요`, ja: `${dest}に行きたいです` };
+            const msgs = { en: `I want to visit ${dest}`, ko: `${dest}에 가고 싶어요`, ja: `${dest}に行きたいです`, zh: `我想去${dest}` };
             document.getElementById('chat-input').value = msgs[currentLang];
             sendMsg();
         }
@@ -546,11 +588,11 @@
         function quickAction(action) {
             const t = i18n[currentLang];
             const msgs = {
-                dest: { en: "Recommend a destination", ko: "여행지 추천해주세요", ja: "おすすめの目的地を教えて" },
-                hotel: { en: "Search for hotels", ko: "호텔을 검색해주세요", ja: "ホテルを検索して" },
-                activity: { en: "What activities are available?", ko: "어떤 액티비티가 있나요?", ja: "どんなアクティビティがありますか？" },
-                budget: { en: "Calculate my budget", ko: "예산을 계산해주세요", ja: "予算を計算して" },
-                itinerary: { en: "Create my itinerary", ko: "일정을 만들어주세요", ja: "旅程を作成して" }
+                dest: { en: "Recommend a destination", ko: "여행지 추천해주세요", ja: "おすすめの目的地を教えて", zh: "推荐一个目的地" },
+                hotel: { en: "Search for hotels", ko: "호텔을 검색해주세요", ja: "ホテルを検索して", zh: "搜索酒店" },
+                activity: { en: "What activities are available?", ko: "어떤 액티비티가 있나요?", ja: "どんなアクティビティがありますか？", zh: "有哪些活动？" },
+                budget: { en: "Calculate my budget", ko: "예산을 계산해주세요", ja: "予算を計算して", zh: "计算我的预算" },
+                itinerary: { en: "Create my itinerary", ko: "일정을 만들어주세요", ja: "旅程を作成して", zh: "创建我的行程" }
             };
             document.getElementById('chat-input').value = msgs[action][currentLang];
             sendMsg();
@@ -572,14 +614,14 @@
 
         function getResponse(msg) {
             const r = i18n[currentLang].responses;
-            if (msg.includes('tokyo') || msg.includes('도쿄') || msg.includes('東京')) return r.tokyo;
-            if (msg.includes('paris') || msg.includes('파리') || msg.includes('パリ')) return r.paris;
-            if (msg.includes('seoul') || msg.includes('서울') || msg.includes('ソウル')) return r.seoul;
-            if (msg.includes('hotel') || msg.includes('호텔') || msg.includes('ホテル') || msg.includes('숙소')) return r.hotels;
-            if (msg.includes('activity') || msg.includes('액티비티') || msg.includes('アクティビティ')) return r.activities;
-            if (msg.includes('budget') || msg.includes('예산') || msg.includes('予算')) return r.budget;
-            if (msg.includes('itinerary') || msg.includes('일정') || msg.includes('旅程')) return r.itinerary;
-            if (msg.includes('recommend') || msg.includes('추천') || msg.includes('おすすめ')) return r.recommend;
+            if (msg.includes('tokyo') || msg.includes('도쿄') || msg.includes('東京') || msg.includes('东京')) return r.tokyo;
+            if (msg.includes('paris') || msg.includes('파리') || msg.includes('パリ') || msg.includes('巴黎')) return r.paris;
+            if (msg.includes('seoul') || msg.includes('서울') || msg.includes('ソウル') || msg.includes('首尔')) return r.seoul;
+            if (msg.includes('hotel') || msg.includes('호텔') || msg.includes('ホテル') || msg.includes('숙소') || msg.includes('酒店')) return r.hotels;
+            if (msg.includes('activity') || msg.includes('액티비티') || msg.includes('アクティビティ') || msg.includes('活动')) return r.activities;
+            if (msg.includes('budget') || msg.includes('예산') || msg.includes('予算') || msg.includes('预算')) return r.budget;
+            if (msg.includes('itinerary') || msg.includes('일정') || msg.includes('旅程') || msg.includes('行程')) return r.itinerary;
+            if (msg.includes('recommend') || msg.includes('추천') || msg.includes('おすすめ') || msg.includes('推荐')) return r.recommend;
             return r.default;
         }
 
