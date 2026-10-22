@@ -5,7 +5,7 @@ destinations, build itineraries, and estimate budgets.
 
 ## Live Demo
 
-[**View Demo**](https://yoon-k.github.io/langchain-travel-planner/)
+[**View Demo**](https://MUSE-CODE-SPACE.github.io/langchain-travel-planner/)
 
 ## Features
 
@@ -23,7 +23,7 @@ destinations, build itineraries, and estimate budgets.
 ### Using `pip`
 
 ```bash
-git clone https://github.com/yoon-k/langchain-travel-planner.git
+git clone https://github.com/MUSE-CODE-SPACE/langchain-travel-planner.git
 cd langchain-travel-planner
 
 python3.12 -m venv .venv
@@ -63,11 +63,11 @@ The agent supports two execution modes and selects one automatically at startup:
 
 | Mode | When it activates | Behavior |
 |------|-------------------|----------|
-| **LLM-backed** | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` is set | LangChain LCEL `create_tool_calling_agent` + `AgentExecutor`, with travel tools bound to the model |
+| **LLM-backed** | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` is set | LangChain 1.x `create_agent` (LangGraph tool-calling loop), with travel tools bound to the model |
 | **Keyword router (fallback)** | No API keys present, or `LLM_PROVIDER=none` | Pure-Python rule-based responses, no external calls. Useful for demos, tests, and CI |
 
 You can force a provider with `LLM_PROVIDER=anthropic|openai|none`. Default
-models are `claude-haiku-4-5-20251001` (Anthropic) and `gpt-4o-mini` (OpenAI),
+models are `claude-haiku-5-5` (Anthropic) and `gpt-5.4-mini` (OpenAI),
 overridable via `ANTHROPIC_MODEL` / `OPENAI_MODEL`.
 
 ## Environment Variables
@@ -76,9 +76,9 @@ overridable via `ANTHROPIC_MODEL` / `OPENAI_MODEL`.
 |----------|---------|-------------|
 | `LLM_PROVIDER` | auto-detect | `anthropic`, `openai`, or `none` |
 | `ANTHROPIC_API_KEY` | — | Anthropic API key for the Claude provider |
-| `ANTHROPIC_MODEL` | `claude-haiku-4-5-20251001` | Override the Claude model id |
+| `ANTHROPIC_MODEL` | `claude-haiku-5-5` | Override the Claude model id |
 | `OPENAI_API_KEY` | — | OpenAI API key |
-| `OPENAI_MODEL` | `gpt-4o-mini` | Override the OpenAI model id |
+| `OPENAI_MODEL` | `gpt-5.4-mini` | Override the OpenAI model id |
 | `PORT` | `5000` | Port for the Flask dev server / gunicorn |
 | `FLASK_DEBUG` | `1` | Set to `0` to disable Werkzeug debug mode |
 
@@ -191,7 +191,7 @@ London, Dubai, Bali (plus generic fallbacks for any other destination).
 
 ## Tech Stack
 
-- **LangChain 0.3** (`langchain`, `langchain-core`, `langchain-community`)
+- **LangChain 1.x** (`langchain`, `langchain-core`, `langgraph`)
 - **Provider SDKs**: `langchain-anthropic`, `langchain-openai`
 - **Flask 3.1** + `flask-cors`
 - **Pydantic v2** for tool input schemas
@@ -211,7 +211,7 @@ MIT License - feel free to use this project for learning and development.
 
 ## 한국어
 
-LangChain 0.3 기반의 여행 플래너입니다. 목적지 추천, 숙소/활동 검색, 예산
+LangChain 1.x 기반의 여행 플래너입니다. 목적지 추천, 숙소/활동 검색, 예산
 계산, 일정 자동 생성, 날씨 안내 등을 지원하며, API 키가 있으면 Anthropic
 Claude / OpenAI GPT 중 자동 선택해 LLM + 툴콜링으로 응답합니다. 키가 없으면
 내장 키워드 라우터로 폴백되어 외부 호출 없이도 동작합니다.
@@ -219,7 +219,7 @@ Claude / OpenAI GPT 중 자동 선택해 LLM + 툴콜링으로 응답합니다. 
 ### 빠른 시작
 
 ```bash
-git clone https://github.com/yoon-k/langchain-travel-planner.git
+git clone https://github.com/MUSE-CODE-SPACE/langchain-travel-planner.git
 cd langchain-travel-planner
 
 python3.12 -m venv .venv
@@ -237,8 +237,8 @@ python -m app.api
 
 | 조건 | 동작 |
 |------|------|
-| `ANTHROPIC_API_KEY`만 있음 | Claude (`claude-haiku-4-5-20251001`) + 툴콜링 |
-| `OPENAI_API_KEY`만 있음 | OpenAI (`gpt-4o-mini`) + 툴콜링 |
+| `ANTHROPIC_API_KEY`만 있음 | Claude (`claude-haiku-5-5`) + 툴콜링 |
+| `OPENAI_API_KEY`만 있음 | OpenAI (`gpt-5.4-mini`) + 툴콜링 |
 | 둘 다 있음 | Anthropic 우선 |
 | 둘 다 없음 | 키워드 라우터로 폴백 (외부 호출 없음) |
 
